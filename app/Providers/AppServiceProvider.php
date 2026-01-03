@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +23,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $isProduction = $this->app->environment('production');
+        $isLocal = $this->app->environment('local');
+
+        JsonResource::withoutWrapping();
+
+        DB::prohibitDestructiveCommands($isProduction);
+
+        Model::automaticallyEagerLoadRelationships(!$isLocal);
+
+        Vite::usePrefetchStrategy('aggressive');
     }
 }

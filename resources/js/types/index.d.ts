@@ -26,7 +26,29 @@ export interface SharedData {
     name: string;
     quote: { message: string; author: string };
     auth: Auth;
+    cartSummary: {
+        item_count: number;
+        product_ids: number[];
+    } | null;
     sidebarOpen: boolean;
+    csrf_token?: string;
+    flash?: {
+        success?: string;
+        error?: string;
+    };
+    [key: string]: unknown;
+}
+
+export interface PageProps {
+    cartSummary: {
+        item_count: number;
+        product_ids: number[];
+    } | null;
+    flash?: {
+        success?: string;
+        error?: string;
+    };
+    csrf_token?: string;
     [key: string]: unknown;
 }
 
@@ -40,4 +62,37 @@ export interface User {
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
+}
+
+export interface Product {
+    id: number;
+    name: string;
+    price: number;
+    stock_quantity: number;
+    description?: string;
+    image?: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface CartItem {
+    id: number;
+    cart_id: number;
+    product_id: number;
+    quantity: number;
+    product: Product;
+    subtotal?: number;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Cart {
+    id: number;
+    user_id: number;
+    items: CartItem[];
+    subtotal?: number;
+    tax?: number;
+    total?: number;
+    created_at: string;
+    updated_at: string;
 }

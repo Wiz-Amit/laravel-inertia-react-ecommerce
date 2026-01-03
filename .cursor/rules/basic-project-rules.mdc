@@ -1,0 +1,54 @@
+---
+alwaysApply: true
+---
+
+# Simple E-commerce Project Rules
+
+## Tech Stack & Environment
+
+- **Backend:** Laravel 12.x (latest)
+- **Frontend:** React 19 (Laravel Starter Kit), TypeScript, Tailwind CSS
+- **UI Components:** shadcn/ui
+- **State Management:** Inertia.js (standard for Laravel/React starter kit)
+
+## Architectural Patterns
+
+- **Controllers:** Keep them thin. Use **Form Request classes** for validation (`php artisan make:request`).
+- **Service Layer:** Use a Service layer for business logic. **Avoid the Repository pattern.**
+- **Authentication:** Use built-in Laravel Starter Kit auth. All cart operations must be linked to the `User` model via database relations (no local storage/guest sessions).
+- **Data formatting:** Use Laravel API resources for data formatting.
+
+## Database & Models
+
+- **Product:** Must include `name`, `price`, and `stock_quantity`.
+- **Cart:** Must be database-persisted and tied to the `authenticated user`.
+
+## Background Tasks & Scheduling
+
+- **Low Stock Notification:** Trigger a **Laravel Job/Queue** when `stock_quantity` drops below a threshold to email an admin.
+- **Daily Sales Report:** Implement a **Scheduled Task (cron)** to run every evening to aggregate daily sales and email an admin.
+
+## Coding Guidelines
+
+- Follow PSR-12 and Laravel best practices.
+- Use TypeScript for all React components and API responses. Use generics for type safety (whenever applicable).
+- Prioritize `shadcn/ui` components for the frontend.
+- Ensure all business logic lives in `app/Services`.
+- Use Laravel Pint and PHP Stan using Larastan for code quality and consistency.
+- Use Pest for feature testing. No need for unit tests.
+
+## Configuration
+
+- Use laravel/telescope for debugging and monitoring.
+- Use laravel/sail for containerization.
+
+## Other important rules
+
+- Use CLI like `php artisan` whenever possible, instead of manually creating files.
+- Use docs directory for project documentation.
+- Install packages using `composer require` and `npm install` instead of manually creating files. Do not manually update composer.json or package.json, if you need to update the dependencies, use the CLI commands.
+- Follow DRY principle.
+- Run `composer test` for testing.
+- Run `composer analyse` for static analysis.
+- Run `composer format` for code formatting.
+- Run `composer review` for code review.

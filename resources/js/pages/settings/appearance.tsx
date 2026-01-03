@@ -11,7 +11,7 @@ import { edit as editAppearance } from '@/routes/appearance';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Appearance settings',
-        href: editAppearance().url,
+        href: editAppearance.url(),
     },
 ];
 

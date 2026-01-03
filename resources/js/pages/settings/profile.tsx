@@ -17,7 +17,7 @@ import { edit } from '@/routes/profile';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Profile settings',
-        href: edit().url,
+        href: edit.url(),
     },
 ];
 
@@ -96,7 +96,7 @@ export default function Profile({
                                                 Your email address is
                                                 unverified.{' '}
                                                 <Link
-                                                    href={send()}
+                                                    href={send.url()}
                                                     as="button"
                                                     className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
                                                 >

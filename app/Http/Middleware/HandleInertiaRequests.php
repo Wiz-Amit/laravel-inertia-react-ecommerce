@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\CartService;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -38,14 +39,35 @@ class HandleInertiaRequests extends Middleware
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
+        $user = $request->user();
+        $cartSummary = null;
+
+        if ($user) {
+            $cartService = app(CartService::class);
+            $cart = $cartService->getCartWithItems($user);
+
+            if ($cart) {
+                $cartSummary = [
+                    'item_count' => $cart->items->sum('quantity'),
+                    'product_ids' => $cart->items->pluck('product_id')->toArray(),
+                ];
+            }
+        }
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user,
             ],
-            'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'cartSummary' => $cartSummary,
+            'sidebarOpen' => !$request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'csrf_token' => csrf_token(),
+            'flash' => [
+                'success' => $request->session()->pull('success'),
+                'error' => $request->session()->pull('error'),
+            ],
         ];
     }
 }

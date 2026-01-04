@@ -2,6 +2,8 @@
 
 A modern e-commerce application built with Laravel 12, React 19, Inertia.js, and Tailwind CSS.
 
+![Demo Screenshot](docs/demo.png)
+
 ## Overview
 
 This is a full-stack e-commerce application featuring:

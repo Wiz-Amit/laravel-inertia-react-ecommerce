@@ -13,6 +13,18 @@ This is a full-stack e-commerce application featuring:
 - Background jobs (low stock notifications, daily sales reports)
 - User authentication and settings
 
+## Database Schema
+
+```mermaid
+erDiagram
+    User ||--o| Cart : "has one"
+    User ||--o{ Order : "has many"
+    Cart ||--o{ CartItem : "has many"
+    Product ||--o{ CartItem : "has many"
+    Product ||--o{ OrderItem : "has many"
+    Order ||--o{ OrderItem : "has many"
+```
+
 ## Tech Stack
 
 - **Backend**: Laravel 12.x, PHP 8.2+

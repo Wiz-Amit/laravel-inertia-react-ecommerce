@@ -3,18 +3,12 @@ import ProductCard from '@/components/product-card';
 import { useCart } from '@/hooks/use-cart';
 import { useFlashMessages } from '@/hooks/use-flash-messages';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, type Product } from '@/types';
+import { type BreadcrumbItem, type Paginated, type Product } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { ShoppingCart } from 'lucide-react';
 
 interface Props {
-    products: {
-        data: Product[];
-        current_page: number;
-        last_page: number;
-        per_page: number;
-        total: number;
-    };
+    products: Paginated<Product>;
     search?: string;
 }
 

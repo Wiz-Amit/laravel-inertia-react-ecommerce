@@ -25,15 +25,8 @@ class OrderController extends Controller
         $orders = $this->orderService->getUserOrders($user, $perPage);
 
         return Inertia::render('Orders/Index', [
-            'orders' => OrderResource::collection($orders->items()),
-            'pagination' => [
-                'current_page' => $orders->currentPage(),
-                'last_page' => $orders->lastPage(),
-                'per_page' => $orders->perPage(),
-                'total' => $orders->total(),
-                'from' => $orders->firstItem(),
-                'to' => $orders->lastItem(),
-            ],
+            /** @phpstan-ignore-next-line */
+            'orders' => $orders->through(fn ($order) => OrderResource::make($order)),
         ]);
     }
 

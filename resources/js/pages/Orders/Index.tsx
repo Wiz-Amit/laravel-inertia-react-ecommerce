@@ -4,7 +4,7 @@ import { formatPrice } from '@/lib/format-price';
 import AppLayout from '@/layouts/app-layout';
 import orders from '@/routes/orders';
 import products from '@/routes/products';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem, type Paginated } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { Package, ShoppingBag } from 'lucide-react';
 
@@ -30,15 +30,7 @@ interface Order {
 }
 
 interface Props {
-    orders: Order[];
-    pagination: {
-        current_page: number;
-        last_page: number;
-        per_page: number;
-        total: number;
-        from: number | null;
-        to: number | null;
-    };
+    orders: Paginated<Order>;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -67,7 +59,26 @@ function getStatusBadge(status: string) {
     );
 }
 
-export default function OrdersIndex({ orders: ordersData, pagination }: Props) {
+export default function OrdersIndex({ orders: ordersData }: Props) {
+    if (!ordersData || !ordersData.data) {
+        return (
+            <AppLayout breadcrumbs={breadcrumbs}>
+                <Head title="Order History" />
+                <div className="flex h-full flex-1 flex-col gap-6 p-6">
+                    <Card>
+                        <CardContent className="flex flex-col items-center justify-center py-12">
+                            <Package className="h-12 w-12 text-muted-foreground/50 mb-4" />
+                            <p className="text-muted-foreground mb-4">You haven't placed any orders yet.</p>
+                            <Button asChild>
+                                <Link href={products.index.url()}>Browse Products</Link>
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </div>
+            </AppLayout>
+        );
+    }
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Order History" />
@@ -77,7 +88,7 @@ export default function OrdersIndex({ orders: ordersData, pagination }: Props) {
                     <p className="text-muted-foreground">View all your past orders</p>
                 </div>
 
-                {ordersData.length === 0 ? (
+                {ordersData.data.length === 0 ? (
                     <Card>
                         <CardContent className="flex flex-col items-center justify-center py-12">
                             <Package className="h-12 w-12 text-muted-foreground/50 mb-4" />
@@ -89,7 +100,7 @@ export default function OrdersIndex({ orders: ordersData, pagination }: Props) {
                     </Card>
                 ) : (
                     <div className="space-y-4">
-                        {ordersData.map((order) => (
+                        {ordersData.data.map((order) => (
                             <Card key={order.id} className="hover:shadow-md transition-shadow">
                                 <CardHeader>
                                     <div className="flex items-center justify-between">
@@ -152,38 +163,40 @@ export default function OrdersIndex({ orders: ordersData, pagination }: Props) {
                             </Card>
                         ))}
 
-                        {pagination.last_page > 1 && (
+                        {ordersData.last_page > 1 && (
                             <div className="flex items-center justify-between pt-4">
                                 <p className="text-sm text-muted-foreground">
-                                    Showing {pagination.from} to {pagination.to} of {pagination.total} orders
+                                    {ordersData.from && ordersData.to ? (
+                                        <>Showing {ordersData.from} to {ordersData.to} of {ordersData.total} orders</>
+                                    ) : (
+                                        <>Page {ordersData.current_page} of {ordersData.last_page}</>
+                                    )}
                                 </p>
                                 <div className="flex gap-2">
-                                    {pagination.current_page > 1 && (
-                                        <Button
-                                            asChild
-                                            variant="outline"
+                                    <Button
+                                        asChild
+                                        variant="outline"
+                                        disabled={ordersData.current_page === 1}
+                                    >
+                                        <Link
+                                            href={orders.index.url({ query: { page: ordersData.current_page - 1 } })}
+                                            preserveState
                                         >
-                                            <Link
-                                                href={orders.index.url({ query: { page: pagination.current_page - 1 } })}
-                                                preserveState
-                                            >
-                                                Previous
-                                            </Link>
-                                        </Button>
-                                    )}
-                                    {pagination.current_page < pagination.last_page && (
-                                        <Button
-                                            asChild
-                                            variant="outline"
+                                            Previous
+                                        </Link>
+                                    </Button>
+                                    <Button
+                                        asChild
+                                        variant="outline"
+                                        disabled={ordersData.current_page === ordersData.last_page}
+                                    >
+                                        <Link
+                                            href={orders.index.url({ query: { page: ordersData.current_page + 1 } })}
+                                            preserveState
                                         >
-                                            <Link
-                                                href={orders.index.url({ query: { page: pagination.current_page + 1 } })}
-                                                preserveState
-                                            >
-                                                Next
-                                            </Link>
-                                        </Button>
-                                    )}
+                                            Next
+                                        </Link>
+                                    </Button>
                                 </div>
                             </div>
                         )}

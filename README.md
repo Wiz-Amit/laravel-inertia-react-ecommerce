@@ -117,3 +117,7 @@ composer test
 # All checks
 composer review
 ```
+
+---
+
+**Author**: [Amit Hazra](https://www.wizamit.com/)
